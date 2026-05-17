@@ -5,7 +5,10 @@ Unity で制作した 3D エンドレスランゲームです。
 
 ## ゲームプレイ動画 / スクリーンショット
 
-> *(プレイ動画・スクリーンショットをここに追加)*
+ <video src="https://github.com/user-attachments/assets/4836722e-bb30-4a91-8c90-60aae291d538"
+         controls
+         width="800">
+  </video>
 
 ---
 
