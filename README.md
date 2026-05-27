@@ -4,11 +4,7 @@ Unity で制作した 3D エンドレスランゲームです。
 プレイヤーキャラクターが自動前進する中、左右移動・ジャンプで障害物を回避しながらアイテムを収集してスコアを競います。
 
 ## ゲームプレイ動画 / スクリーンショット
-
- <video src="https://github.com/user-attachments/assets/4836722e-bb30-4a91-8c90-60aae291d538"
-         controls
-         width="800">
-  </video>
+[![デモ動画のサムネイル](https://img.youtube.com/vi/6MqNY3DHQnE/0.jpg)](https://www.youtube.com/watch?v=6MqNY3DHQnE)
 
 ---
 
