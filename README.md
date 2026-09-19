@@ -33,11 +33,15 @@ Unity で制作した 3D エンドレスランゲームです。
 
 ### ゲームの流れ
 
-1. ゲーム開始と同時にキャラクターが自動で前進（時間経過で加速）
-2. A / D キーまたは方向キーで左右に移動し、障害物を回避
-3. スペースキーでジャンプして高い障害物を乗り越える
-4. フィールド上のアイテムを収集してスコアを稼ぐ
-5. 障害物に衝突するとゲームオーバー → 自動リスタート
+1. タイトル画面からゲームを開始
+2. 2 秒のカウントダウン後、キャラクターが自動で前進（時間経過で加速）
+3. A / D キーまたは方向キーで左右に移動し、障害物を回避
+4. スペースキーでジャンプして高い障害物を乗り越える
+5. フィールド上のアイテムを収集してスコアを稼ぐ
+6. 障害物に衝突するとゲームオーバー → リザルト画面を表示
+   - 今回のスコア・ベストスコアを確認
+   - ベストスコア更新時は「NEW RECORD」を表示
+7. リスタートボタンでゲームに戻る
 
 ---
 
@@ -111,11 +115,30 @@ transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World);
 moveSpeed += Time.deltaTime * acceleration;
 ```
 
-### 5. Animator State Machine によるアニメーション制御
+### 5. リザルト画面とベストスコア管理
+
+ゲームオーバー時にリザルト画面を表示し、現在のスコアとベストスコアを比較します。`BestScoreRecord` は `DontDestroyOnLoad` で複数シーンにわたってスコアを保持します。
+
+```csharp
+// GameManager.cs
+public void Result()
+{
+    if (score > bestScoreRecord.bestScore)
+    {
+        isChangeRecord = true;
+        bestScoreRecord.bestScore = score;
+    }
+    uiManager.ResultShow(score, bestScoreRecord.bestScore, isChangeRecord);
+}
+```
+
+**工夫点:** `DontDestroyOnLoad` を適用した Singleton パターンで、シーン遷移をまたいでもベストスコアが消えません。
+
+### 6. Animator State Machine によるアニメーション制御
 
 Animator の `SetTrigger` / `SetBool` を使い、走り・ジャンプ・アイドルの各ステートをコードから制御しています。Animator Controller でステートマシンを構築し、アニメーション遷移ロジックをスクリプトから分離することで保守性を高めています。
 
-### 6. コンポーネント指向の疎結合設計
+### 7. コンポーネント指向の疎結合設計
 
 各スクリプトが単一の責務を持ち、MonoBehaviour コンポーネントとして疎結合に設計されています。`GameManager` がスコアとオーディオの管理を一元化し、他コンポーネントからの参照を最小限に抑えています。
 
@@ -126,15 +149,22 @@ Animator の `SetTrigger` / `SetBool` を使い、走り・ジャンプ・アイ
 ```
 PlayerMovement      ゲーム状態 (isGamePlaying) を管理・プレイヤー制御
       │
-      ├─ ObstacleCrush   衝突検知 → isGamePlaying = false (ゲームオーバー)
+      ├─ ObstacleCrush    衝突検知 → PlayerMovement.GameOver()
       │
-GameManager         スコア計算・音声再生を一元管理
+GameManager         スコア計算・音声再生・リザルト処理を一元管理
       │
-      └─ Collectable     アイテム回転 + 取得検知 → GameManager.UpdateScore()
+      ├─ Collectable      アイテム回転 + 取得検知 → GameManager.UpdateScore()
+      │
+      ├─ UIManager        リザルトパネルの表示制御
+      │
+      └─ BestScoreRecord  ベストスコアを DontDestroyOnLoad で永続保持（Singleton）
 
 GenerateLevels      3 秒ごとにランダムなレベル Prefab を無限生成
       │
 Sweeper             通過済みレベルオブジェクトを自動削除してメモリを解放
+
+MySceneManager      ボタンからのシーン遷移を管理
+LoadScene           ロードシーン経由で GameScene へ自動遷移
 ```
 
 ---
@@ -158,8 +188,8 @@ git clone https://github.com/nasu-cell/3DRunGame.git
 # 3. Unity バージョンを確認
 #    Unity 6000.3.11f1 以降を使用（バージョン不一致時はアップグレードを選択）
 
-# 4. シーンを開く
-#    Assets/Scenes/ からメインシーンを開く
+# 4. TitleScene を開く
+#    Assets/Scenes/TitleScene.unity を開く
 
 # 5. Play ボタンでゲーム開始
 ```
@@ -189,15 +219,23 @@ Assets/
 │   ├── StartingLevel.prefab  # 開始レベル
 │   ├── Level (1-3).prefab    # ランダム生成レベル
 │   ├── Collectable.prefab    # 収集アイテム
-│   └── character.prefab      # プレイヤーキャラクター
+│   ├── character.prefab      # プレイヤーキャラクター
+│   └── BestScoreRecord.prefab # ベストスコア保持オブジェクト（DontDestroyOnLoad）
 ├── Scenes/                   # ゲームシーン
+│   ├── TitleScene.unity      # タイトル画面
+│   ├── LoadScene.unity       # ロード用中継シーン
+│   └── GameScene.unity       # ゲーム本体
 ├── Scripts/                  # C# スクリプト
 │   ├── PlayerMovement.cs     # プレイヤー制御・ゲーム状態管理
-│   ├── GameManager.cs        # スコア・オーディオ管理
+│   ├── GameManager.cs        # スコア・オーディオ・リザルト管理
+│   ├── UIManager.cs          # リザルト画面の UI 表示制御
+│   ├── BestScoreRecord.cs    # ベストスコアの Singleton 管理
 │   ├── GenerateLevels.cs     # 手続き的レベル生成
 │   ├── Collectable.cs        # アイテム取得処理
 │   ├── ObstacleCrush.cs      # 障害物衝突・ゲームオーバー検知
-│   └── Sweeper.cs            # 不要オブジェクトの自動削除
+│   ├── Sweeper.cs            # 不要オブジェクトの自動削除
+│   ├── MySceneManager.cs     # ボタンからのシーン遷移
+│   └── LoadScene.cs          # ロードシーンでの自動シーン遷移
 ├── Settings/                 # URP レンダリング設定
 └── [Third-party Assets]      # 外部アセット
     ├── Casual SoundFX Pack
@@ -210,7 +248,7 @@ Assets/
 
 ## 今後の改善予定
 
-- [ ] ハイスコアのローカル保存（PlayerPrefs）
+- [ ] ベストスコアの永続保存（PlayerPrefs）— 現在はセッション内のみ保持
 - [ ] モバイル向けスワイプ・タップ操作対応
 - [ ] オブジェクトプーリングによるさらなるパフォーマンス最適化
 - [ ] レベルバリエーションの追加
