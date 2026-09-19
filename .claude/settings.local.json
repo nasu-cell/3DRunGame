@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\shii1\\\\UnityProjects\\\\3DInfiniteRunner\\\\3D Infinite Runner\" -Force)",
+      "Bash(Format-Table -AutoSize)"
+    ]
+  }
+}

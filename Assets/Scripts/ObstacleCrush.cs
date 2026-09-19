@@ -6,10 +6,15 @@ public class ObstacleCrush : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.gameObject.CompareTag("Collectable") && !other.gameObject.CompareTag("Ground"))
+        if (!other.gameObject.CompareTag("Collectable") &&
+            !other.gameObject.CompareTag("Ground"))
         {
             Debug.Log(other.gameObject.tag);
-            gameObject.GetComponentInParent<PlayerMovement>().isGamePlaying = false;
+
+            PlayerMovement player =
+                gameObject.GetComponentInParent<PlayerMovement>();
+
+            player.GameOver();
         }
     }
 }
