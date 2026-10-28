@@ -294,11 +294,11 @@ Assets/
 
 ## 使用アセット
 
-| 素材名 | 提供元 | 用途 | ライセンス |
-|--------|--------|------|------------|
-| [Supercyan Character Pack Animal People Sample](https://assetstore.unity.com/packages/3d/characters/supercyan-character-pack-animal-people-sample-136183) | Supercyan | プレイヤーキャラクター | Unity Asset Store EULA |
-| Forest Pack | *(記入)* | 背景・ステージ | Unity Asset Store EULA |
-| Casual SoundFX Pack | *(記入)* | 効果音 | Unity Asset Store EULA |
-| Free Orchestral Music Pack | *(記入)* | BGM | Unity Asset Store EULA |
+| 素材名 | 用途 | ライセンス |
+|--------|------|------------|
+| [Supercyan Character Pack Animal People Sample](https://assetstore.unity.com/packages/3d/characters/supercyan-character-pack-animal-people-sample-136183) | プレイヤーキャラクター | Unity Asset Store EULA |
+| Forest Pack | 背景・ステージ | Unity Asset Store EULA |
+| Casual SoundFX Pack | 効果音 | Unity Asset Store EULA |
+| Free Orchestral Music Pack | BGM | Unity Asset Store EULA |
 
 本プロジェクトに含まれるサードパーティアセットは、各提供元のライセンスに従います。
