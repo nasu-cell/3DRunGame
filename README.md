@@ -3,7 +3,7 @@
 Unity で制作した 3D エンドレスランゲームです。  
 自動で前進し続けるキャラクターを左右移動・ジャンプで操作し、障害物を避けながらアイテムを集めてスコアを競います。
 
-<div align="center">
+<div align="left">
   <img src="Images/プレイ中.png" width="700">
 </div>
 
